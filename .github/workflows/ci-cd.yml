@@ -27,11 +27,14 @@ jobs:
           context: .
           push: true
           tags: altjin09/kubernetes_test:latest
-      
+
       - name: Set up Kubeconfig
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
+
+      - name: Check cluster connection
+        run: kubectl get nodes
 
       - name: Deploy to Kubernetes
         run: |
