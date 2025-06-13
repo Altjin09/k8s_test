@@ -51,7 +51,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/kubernetes_test:latest
+          tags: altjin09/kubernetes_test:latest
 
       # Kubernetes deployment
       - name: Create Kind cluster
