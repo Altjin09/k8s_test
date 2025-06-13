@@ -40,4 +40,4 @@ jobs:
       - name: Deploy to Kind cluster
         run: |
           kubectl apply -f k8s/deployment.yaml
-          kubectl rollout status deployment/kubernetes-test-deployment
+          kubectl rollout status deployment/webapp-service
