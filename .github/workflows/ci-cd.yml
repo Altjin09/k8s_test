@@ -26,7 +26,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/kubernetes_test:latest
+          tags: altjin09/kubernetes_test:latest
       
       - name: Set up Kubeconfig
         run: |
