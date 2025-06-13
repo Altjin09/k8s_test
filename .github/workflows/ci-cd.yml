@@ -2,17 +2,41 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  build-and-deploy:
+  lint-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # HTML Lint
+      - name: Install HTMLHint
+        run: npm install -g htmlhint
+
+      - name: Lint HTML files
+        run: htmlhint "**/*.html"
+
+      # CSS Lint
+      - name: Install Stylelint
+        run: npm install -g stylelint stylelint-config-standard
+
+      - name: Lint CSS files
+        run: stylelint "**/*.css"
+
+      # JS Lint
+      - name: Install ESLint
+        run: npm install -g eslint
+
+      - name: Initialize ESLint config
+        run: eslint --init --no-eslintrc || true
+
+      - name: Lint JS files
+        run: eslint "**/*.js" || echo "Ignore eslint warnings"
+
+      # Docker Build & Push
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -27,8 +51,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: altjin09/kubernetes_test:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/kubernetes_test:latest
 
+      # Kubernetes deployment
       - name: Create Kind cluster
         uses: helm/kind-action@v1.8.0
 
@@ -41,4 +66,4 @@ jobs:
         run: |
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
-          kubectl rollout status deployment/webapp-deployment
+          kubectl rollout status deployment/kubernetes-test
